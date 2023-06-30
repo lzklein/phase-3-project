@@ -32,11 +32,11 @@ def main():
         if choice == 1:
             print("Enter your username:")
             login_input = input()
-            query = "SELECT * FROM users WHERE name = ?"
-            CURSOR.execute(query, (login_input,))
+            query = "SELECT * FROM users WHERE LOWER(name) = LOWER(?)"
+            CURSOR.execute(query, (login_input.lower(),))
             result = CURSOR.fetchone()
             if result:
-                print(f"Welcome, {login_input}!")
+                print(f"Welcome, {login_input.upper()}!")
                 pc_choice = 0
                 while pc_choice != 4:
                     print("What would you like to do?")
@@ -92,13 +92,14 @@ def main():
                                 for part in pc_parts:
                                     print(f"{part[2]} : {part[1]} | ${part[4]} | {part[3]}W")
                                 part_choice = 0
-                                while part_choice != 6:
+                                while part_choice != 7:
                                     print("1) Check Compatibility")
                                     print("2) Calculate Power Consumption")
                                     print("3) Calculate Price")
                                     print("4) Calculate Total RAM Memory")
-                                    print("5) Display Parts Again")
-                                    print("6) Exit")
+                                    print("5) Calculate Total Storage")
+                                    print("6) Display Parts Again")
+                                    print("7) Exit")
                                     try: part_choice = int(input())
                                     except: print("Enter one of the number options")
                                     if part_choice == 1:
@@ -158,25 +159,39 @@ def main():
                                             if mobo_size > case_size:
                                                 print("Case too small!!")
 
-                                    if part_choice == 2:
+                                    elif part_choice == 2:
                                         total_power = 0
                                         for part in pc_parts:
                                             if part[2] != 'PSU':
                                                 total_power += part[3]
                                         print(f"Total power consuption: {total_power}W")
                                         print("Make sure the Power Supply has at least that much power!")
-                                    if part_choice == 3:
+                                    elif part_choice == 3:
                                         total_price = 0
                                         for part in pc_parts:
                                             total_price += part[4]
                                         print(f"Total price is ${round(total_price, 2)}")
-                                    if part_choice == 4:
+                                    elif part_choice == 4:
                                         total_memory = 0 
                                         for part in pc_parts:
                                             if part[8] != None:
                                                 total_memory += part[8]
                                         print(f"Total memory is {total_memory} GB")
-                                    if part_choice == 5:
+                                    elif part_choice == 5:
+                                        total_storage = 0
+                                        terabytes = 0
+                                        gigabytes = 0
+                                        for part in pc_parts:
+                                            if part[2] == 'Storage':
+                                                total_storage += part[9]
+                                        if total_storage > 1024:
+                                            terabytes = int(total_storage / 1024)
+                                            gigabytes = total_storage % 1024
+                                            print(f"Total storage capacity is {terabytes}tb and {gigabytes}gb")
+                                        else:
+                                            print(f"Total storage capacity is {total_storage}gb")
+
+                                    elif part_choice == 6:
                                         for part in pc_parts:
                                             print(f"{part[2]} : {part[1]} | ${part[4]} | {part[3]}W")
                             else:
@@ -185,8 +200,8 @@ def main():
                         Pc.create_table()
                         print("Name your PC <must be unique>")
                         pc_name = input()
-                        query = "SELECT * FROM pcs WHERE name = ?"
-                        CURSOR.execute(query, (pc_name,))
+                        query = "SELECT * FROM pcs WHERE LOWER(name) = LOWER(?)"
+                        CURSOR.execute(query, (pc_name.lower(),))
                         result = CURSOR.fetchone()
                         if result:
                             print("Name already exists!")
@@ -253,8 +268,8 @@ def main():
             if new_name_input == "":
                 print("Invalid name")
             else:
-                query = "SELECT * FROM users WHERE name = ?"
-                CURSOR.execute(query, (new_name_input,))
+                query = "SELECT * FROM users WHERE LOWER(name) = LOWER(?)"
+                CURSOR.execute(query, (new_name_input.lower(),))
                 result = CURSOR.fetchone()
                 if result:
                     print("Name already exists!")
@@ -322,12 +337,12 @@ def create_part(part_type, pc):
         while ram_count == None:
             print("How many sticks?")
             try: ram_count = int(input()) 
-            except: print("not a number")
+            except: print("Not a Number")
         ram_memory = None
         while ram_memory == None:
-            print("How much memory?")
+            print("How much memory in Gigabytes?")
             try: ram_memory = int(input()) 
-            except: print("not a number")
+            except: print("Not a Number. Do not Include GB")
         part_ram = f"{ram_memory}GB x{ram_count}"
         part_ram_total = ram_memory * ram_count
         part_list.append(part_ram)
@@ -335,21 +350,21 @@ def create_part(part_type, pc):
     if part_type == "Storage":
         part_storage = None
         while part_storage == None:
-            print("What is the Storage capacity?")
+            print("What is the Storage capacity in Gigabytes?")
             try: part_storage = int(input()) 
-            except: print("not a number")
+            except: print("Not a Number. Do not Include GB")
         part_list.append(part_storage)
     part_power = None
     while part_power == None:
-        print("What is the power consumption?")
+        print("What is the power consumption in Watts?")
         try: part_power = int(input()) 
-        except: print("not a number")
+        except: print("Not a Number. Do not Include W")
     part_list.append(part_power)
     part_price = None
     while part_price == None:
         print("What is the price?")   
         try: part_price = float(input()) 
-        except: print("not a number")
+        except: print("Not a Number. Do not Include $")
     part_list.append(part_price)
 
     part_list.append(part_pc)

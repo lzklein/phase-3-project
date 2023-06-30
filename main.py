@@ -5,7 +5,7 @@ import sqlite3
 CONN = sqlite3.connect('lib/database.db')
 CURSOR = CONN.cursor()
 
-def app():
+def main():
     choice = 0
     while choice != 3:
         print(''' 
@@ -136,7 +136,7 @@ def app():
                                         if psu is not None:
                                             total_power = 0
                                             for part in pc_parts:
-                                                if part[2] is not 'PSU':
+                                                if part[2] != 'PSU':
                                                     total_power += part[3]
                                             if psu[3] < total_power:
                                                 print("Power Supply Not Enough Power!!")
@@ -372,5 +372,5 @@ def create_part(part_type, pc):
     Parts.add_parts(part_name, part_type, part_power, part_price, part_chipset, part_size, part_ram, part_ram_total, part_storage, part_pc)
             # new_part = Parts(name, type, power, price, chipset, size, memory, total_memory, storage, pc)
 
-if __name__ == "__app__":
-    app()
+if __name__ == "__main__":
+    main()

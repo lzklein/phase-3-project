@@ -5,7 +5,7 @@ import sqlite3
 CONN = sqlite3.connect('lib/database.db')
 CURSOR = CONN.cursor()
 
-def main():
+def app():
     choice = 0
     while choice != 3:
         print(''' 
@@ -372,5 +372,5 @@ def create_part(part_type, pc):
     Parts.add_parts(part_name, part_type, part_power, part_price, part_chipset, part_size, part_ram, part_ram_total, part_storage, part_pc)
             # new_part = Parts(name, type, power, price, chipset, size, memory, total_memory, storage, pc)
 
-if __name__ == "__main__":
-    main()
+if __name__ == "__app__":
+    app()

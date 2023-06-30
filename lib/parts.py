@@ -122,3 +122,12 @@ class Parts:
         '''
         CURSOR.execute(delete_sql)
         CONN.commit()
+
+    @classmethod
+    def delete_children_pc(cls, pc):
+        sql = '''
+            DELETE FROM parts WHERE pc = ?
+        '''
+        parameter = (pc,)
+        CURSOR.execute(sql, parameter)
+        CONN.commit()

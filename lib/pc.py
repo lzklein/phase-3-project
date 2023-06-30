@@ -69,3 +69,12 @@ class Pc:
         response = CURSOR.execute(sql)
         all_pcs = response.fetchall()
         return all_pcs
+    
+    @classmethod
+    def delete_one(cls, name):
+        sql = '''
+            DELETE FROM pcs WHERE name = ?
+        '''
+        parameter = (name,)
+        CURSOR.execute(sql, parameter)
+        CONN.commit()

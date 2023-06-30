@@ -38,22 +38,32 @@ def main():
             if result:
                 print(f"Welcome, {login_input.upper()}!")
                 pc_choice = 0
-                while pc_choice != 4:
+                while pc_choice != 5:
                     print("What would you like to do?")
                     print("1) View PCs")
                     print("2) Create New PC")
-                    print("3) Delete ALL pcs")
-                    print("4) Logout")
+                    print("3) Delete a pc")
+                    print("4) Delete ALL pcs")
+                    print("5) Logout")
                     try: pc_choice = int(input())
                     except: print("Enter one of the number options")
                     if pc_choice == 1:
-                        print("VIEW ALL PCS")
                         all_pcs = Pc.get_all()
-                        for pc in all_pcs:
-                        #  print(pc)
-                         print(f"{pc[0]}) {pc[1]}")
                         pc_choice = -1
                         while pc_choice != 0:
+                            print('''
+             ____    __      _      ____ _____ ______ 
+            |    \  /  ]    | |    |    / ___/|      |
+            |  o  )/  /     | |     |  (   \_ |      |
+            |   _//  /      | |___  |  |\__  ||_|  |_|
+            |  | /   \_     |     | |  |/  \ |  |  |  
+            |  | \     |    |     | |  |\    |  |  |  
+            |__|  \____|    |_____||____|\___|  |__|  
+                                          
+                            ''')
+                            for pc in all_pcs:
+                        #  print(pc)
+                                print(f"{pc[0]}) {pc[1]}")
                             print("Select a PC to view, or enter '0' to exit View All")
                             try: pc_choice = int(input())
                             except: print("Enter one of the number options")
@@ -86,7 +96,7 @@ def main():
                             .=======================.
                             | ::::::::::::::::  ::: |
                             | ::::::::::::::[]  ::: |
-                            |   -----------     ::: |
+                            |  ::========::::   ::: |
                             `-----------------------'
                                 ''')
                                 for part in pc_parts:
@@ -248,13 +258,37 @@ def main():
                                 elif pc_cust_choice == 9:
                                     print("Pc Created!")    
                                 else:
-                                    print("Invalid Input")          
+                                    print("Invalid Input")    
                     elif pc_choice == 3:
+                        delete_choice = None
+                        while delete_choice == None:
+                            all_pcs = Pc.get_all()
+                            for pc in all_pcs:
+                                print(f"{pc[0]}) {pc[1]}")
+                            print("Enter the name of a pc to delete:")
+                            print("Enter 0 to return")
+                            delete_choice = input()
+                            if delete_choice == 0:
+                                print("Cancelling deletion")
+                            else:
+                                delete_target = False
+                                for pc in all_pcs:
+                                    if delete_choice == pc[1]:
+                                        delete_target = True
+                                        break
+                                if delete_target == True:
+                                    Pc.delete_one(delete_choice)
+                                    Parts.delete_children_pc(delete_choice)
+                                    print(f"{delete_choice} Deleted!")
+                                else:
+                                    print("PC name not found")
+                                    delete_choice == None
+                    elif pc_choice == 4:
                         print("DELETING ALL")
                         Pc.delete_all()
                         Parts.delete_all()
                         print("All deleted. If that was a typo, sucks to suck")
-                    elif pc_choice == 4:
+                    elif pc_choice == 5:
                         print("Logging out")
                         print("Have a nice day!")
                     else:
